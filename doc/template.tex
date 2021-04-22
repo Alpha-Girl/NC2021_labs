@@ -1,0 +1,95 @@
+\documentclass[12pt,a4paper,utf8]{ctexart}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfig}
+\usepackage{cite}
+\usepackage[ntheorem]{empheq}
+\usepackage{enumitem}
+\usepackage{fullpage}
+\usepackage{cleveref}
+\usepackage{cellspace}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{dkgreen}{rgb}{.068,.578,.068}
+\definecolor{dkpurple}{rgb}{.320,.064,.680}
+
+% set Matlab styles
+\lstset{
+   language=Matlab,
+   keywords={break,case,catch,continue,else,elseif,end,for,function,
+      global,if,otherwise,persistent,return,switch,try,while},
+   basicstyle=\ttfamily,
+   keywordstyle=\color{blue}\bfseries,
+   commentstyle=\color{dkgreen},
+   stringstyle=\color{dkpurple},
+   backgroundcolor=\color{white},
+   tabsize=4,
+   showspaces=false,
+   showstringspaces=false
+}
+
+\begin{document}
+\CJKfamily{zhkai}	
+
+
+\begin{center}
+\textbf{作业一}\\
+\textbf{姓名 ~~~~~~~~~~~~~ 学号 ~~~~~~~~~~~~~~ 日期}\\
+\end{center}
+
+\begin{center}
+\fbox{
+\begin{minipage}{40em}
+\vspace{5cm}
+\hspace{20cm}
+\end{minipage}}
+\end{center}
+\vspace{1cm}
+
+\begin{enumerate}
+\item[第一题] \textbf{重心插值公式(barycentric interpolation formula)}  
+
+课堂上我们已经讨论过了基于$n+1$个插值点$\{x_j\}_{j=0}^n$的Lagrange插值多项式：
+\begin{equation}
+p(x) = \sum_{j=0}^{n} f_j \ell_j(x) \label{lagrange}
+\end{equation}
+此处，$f_j = f(x_j)$。Lagrange插值基函数(Lagrange polynomial)
+\begin{equation}
+\ell_{j}(x)=\frac{\prod_{k \neq j}\left(x-x_{k}\right)}{\prod_{k \neq j}\left(x_{j}-x_{k}\right)} \label{cardinal}
+\end{equation}
+满足
+\begin{equation}
+\ell_{j}\left(x_{k}\right)=\left\{\begin{array}{ll}
+1 & k=j \\
+0 & k \neq j
+\end{array}\right. \nonumber
+\end{equation}
+
+
+\item[第二题]
+\textsc{Matlab}程序显示如下：
+\begin{lstlisting}[frame=single]
+a = -1;
+op = @(x) 1./((x-a).^2);
+p = 4.5e-16;
+y = a+p;
+val = op(y)
+fvals = f(1-x);
+while( all(fvals(2:end)./fvals(1:end-1) > testRatio) )
+    poleOrder = poleOrder + 1;
+    fvals = fvals.*x;
+end
+\end{lstlisting}
+
+\item[第三题]
+
+
+
+\end{enumerate}
+
+
+
+
+\end{document}
