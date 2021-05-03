@@ -15,15 +15,19 @@ x_exact = [1; 0; 1; 0; 0; 0; 0; -1; 0; 1];
 tmp = abs(max(x_exact));
 x_1 = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0];
 x_2 = [1; 1; 1; 1; 1; 1; 1; 1; 1; 1];
+L = tril(A, -1);
+U = triu(A, 1);
 D = diag(diag(A));
-R = speye(10) - D \ A;
-g = D \ b;
+
+w=0.8;
+S=(speye(10)+w*D\L)\(speye(10)-w*(D\U+speye(10)));
+f=w*(speye(10)+w*D\L)\D\b;
 count = [];
 number = 1;
 
-while abs(max(x_1 - x_2)) > 10^(- 15)
+while abs(max(x_1 - x_2)) > 10^(- 15) & number <1000
     x_1 = x_2;
-    x_2 = R * x_1 + g;
+    x_2 = S * x_1 + f;
     count(number) = abs(max(x_2 - x_exact)) / tmp;
     number = number + 1;
 end
