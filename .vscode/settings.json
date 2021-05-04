@@ -1,0 +1,6 @@
+{
+    "latex-workshop.latex.magic.args": [
+        "%DOC%",
+        " !TeX options"
+    ]
+}

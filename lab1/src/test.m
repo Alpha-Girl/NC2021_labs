@@ -58,38 +58,32 @@ x = x_2
 
 % SOR Part:
 % w=0.4:
-[count_S_0, x, state] = SOR(0.4, A, x_exact, b);
+[count_S_0, x, state] = SOR(1.5, A, x_exact, b);
 % w=0.8:
-[count_S_1, x, state] = SOR(0.8, A, x_exact, b);
+[count_S_1, x, state] = SOR(1.55, A, x_exact, b);
 % w=1.2:
-[count_S_2, x, state] = SOR(1.2, A, x_exact, b);
+[count_S_2, x, state] = SOR(1.6, A, x_exact, b);
 % w=1.6:
-[count_S_3, x, state] = SOR(1.6, A, x_exact, b);
-semilogy([1:length(count_J)], count_J, ...
-    [1:length(count_G)], count_G, ...
-    [1:length(count_S_0)], count_S_0, ...
-    [1:length(count_S_1)], count_S_1, ...
+[count_S_3, x, state] = SOR(1.65, A, x_exact, b);
+[count_S_4, x, state] = SOR(1.7, A, x_exact, b);
+semilogy([1:length(count_S_0)], count_S_0, ...
     [1:length(count_S_2)], count_S_2, ...
-    [1:length(count_S_3)], count_S_3);
-legend('Jacobi', 'Gauss-Siedel', 'SOR w=0.4', ...
-    'SOR w=0.8', 'SOR w=1.2', 'SOR w=1.6', ...
+[1:length(count_S_4)], count_S_4);
+legend('SOR w=1.5', ...
+     'SOR w=1.6', 'SOR w=1.7', ...
     'Location', 'northeast');
 xlabel('Iterations');
 ylabel('Error size');
 title('Error size - Iterations Graph');
-text(length(count_J), ...
-    count_J(length(count_J)), 'Jacobi');
-text(length(count_G), ...
-    count_G(length(count_G)), 'Gauss-Siedel');
-text(length(count_S_0) / 2, ...
-    count_S_0(floor(length(count_S_0) / 2)), 'SOR w=0.4');
-text(length(count_S_1) / 2, ...
-    count_S_1(length(count_S_1) / 2), 'SOR w=0.8');
-text(length(count_S_2) / 2, ...
-    count_S_2(length(count_S_2) / 2), 'SOR w=1.2');
-text(length(count_S_3), ...
-    count_S_3(length(count_S_3)), 'SOR w=1.6');
 
+text(length(count_S_0), ...
+    count_S_0((length(count_S_0))), 'w=1.5');
+
+text(length(count_S_2) , ...
+    count_S_2(length(count_S_2)), 'w=1.6');
+
+text(length(count_S_4)/2, ...
+    count_S_4(floor(length(count_S_4)/2)), 'w=1.7');
 function [count, x, state] = SOR(w, A, x, b)
     x_exact = x;
     tmp = abs(max(x_exact));
@@ -113,7 +107,7 @@ function [count, x, state] = SOR(w, A, x, b)
         count(number) = abs(max(x_2 - x_exact)) / tmp;
         number = number + 1;
     end
-    % if not convergence, return state = 0
+
     if number == 1000
         state = 0
     else
