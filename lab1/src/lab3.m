@@ -9,7 +9,7 @@ A = [-148, -105, -83, -67;
     488, 343, 269, 216;
     -382, -268, -210, -170;
     50, 38, 32, 29];
-A = -A; %comment this line to slove 3(b)
+A = -B; %comment this line to slove 3(b)
 % or uncomment to solve 3(c)
 % or add minus to solve -A
 q_old = [1; 1; 1; 1];
@@ -19,31 +19,35 @@ q_old_bar = q_old / max(abs(q_old));
 % Calculate eigenvalues by Matlab
 eig(A)
 % Iterations
+flag = 0;
+
 for i = 1:maxrept
     q_update = A * q_old_bar;
-    [~, I] = max(abs(q_update));
-    lamda = q_update(I);
     q_new = A * q_update;
-    lamda_square = max(abs(q_new));
-    q_new_bar = q_new / lamda_square;
+    lambda_square = max(abs(q_new));
+    q_new_bar = q_new / lambda_square;
 
-    if max(abs(q_old_bar - q_new_bar)) < epsilon & ...
-            lamda > 0
+    if max(abs(q_old_bar - q_new_bar)) < epsilon
         % Print lambda and eigenvector
-        fprintf("lamda:%.16f\nq_new_bar:", ...
-            sqrt(lamda_square));
-        q_new_bar
+        lambda = sqrt(lambda_square);
+        vec = q_update + lambda * q_old_bar;
+
+        if max(abs(vec)) > 1
+            fprintf("lambda:%.16f\nq_new_bar:", lambda);
+            vec = vec / max(abs(vec))
+        end
+
+        vec = q_update - lambda * q_old_bar;
+
+        if max(abs(vec)) > 1
+            fprintf("lambda:%.16f\nq_new_bar:", -lambda);
+            vec = vec / max(abs(vec))
+        end
+
         break
-    elseif max(abs(q_old_bar - q_new_bar)) < epsilon & ...
-            lamda < 0
-        % Print lambda and eigenvector
-        fprintf("lamda:%.16f\nq_new_bar:", ...
-            -sqrt(lamda_square));
-        q_new_bar
-        break
-    else
-        q_old_bar = q_new_bar;
     end
+
+    q_old_bar = q_new_bar;
 
 end
 

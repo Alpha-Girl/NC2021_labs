@@ -16,7 +16,28 @@
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
+\usepackage{lipsum}
 
+\makeatletter
+\newenvironment{breakablealgorithm}
+  {% \begin{breakablealgorithm}
+   \begin{center}
+     \refstepcounter{algorithm}% New algorithm
+     \hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+     \renewcommand{\caption}[2][\relax]{% Make a new \caption
+       {\raggedright\textbf{\ALG@name~\thealgorithm} ##2\par}%
+       \ifx\relax##1\relax % #1 is \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+       \else % #1 is not \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+       \fi
+       \kern2pt\hrule\kern2pt
+     }
+  }{% \end{breakablealgorithm}
+     \kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+   \end{center}
+  }
+\makeatother
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}  % Use Input in the format of Algorithm
 \renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm
 \usepackage{longtable}
@@ -262,14 +283,14 @@ end
               }
               \subfigure[SOR] {
                   \label{fig:b}
-                  \includegraphics[width=0.2\columnwidth]{G.png}
+                  \includegraphics[width=0.2\columnwidth]{S.png}
               }
               \caption{不同方法的迭代矩阵的非零元分布}
               \label{fig}
           \end{figure}
 
 
-          根据非零元分布，设计优化算法，见代码部分，优化前后花销如表\ref{tb1}。可以看出优化效果并不明显，甚至有的方法优化后时间开销反而更长。这与\textsc{Matlab}的底层实现有关，可能对原来的矩阵乘法有并行化的处理。
+          根据非零元分布，设计优化算法，见代码部分（只展示迭代循环部分，其余部分不变），优化前后花销如表\ref{tb1}。可以看出优化效果并不明显，甚至有的方法优化后时间开销反而更长。这与\textsc{Matlab}的底层实现有关，可能对原来的矩阵乘法有并行化的处理。
           \begin{table}[H]
               \centering
               \begin{tabular}{|c|c|c|}
@@ -529,18 +550,20 @@ end
                   \State $\overrightarrow{\overline{q^{old}}}$ $\leftarrow$ ${\overrightarrow{q^{old}}}$/${\left\lVert \overrightarrow{q^{old}}\right\rVert_{\infty} }$;
                   \For {$i$ = $1$ \textbf{to} $maxrept$ }
                   \State$\overrightarrow{q^{update}} $ $\leftarrow$ $A$ $\overrightarrow{\overline{q^{old}}}$;
-                  \State$find$ $j$ $that$ $satisfy$ $\left\lvert\overrightarrow{q^{update}}_{j} \right\rvert $=${\left\lVert \overrightarrow{q^{update}}\right\rVert_{\infty} }$;
-                  \State$index$ $\leftarrow$ $j$ ;
-                  \State$flag$ $\leftarrow$ $\overrightarrow{q^{update}}_{index}$;
                   \State$\overrightarrow{q^{new}}$ $\leftarrow$ $A$ $\overrightarrow{q^{update}}$;
                   \State$\lambda^{2}$ $\leftarrow$ ${\left\lVert \overrightarrow{q^{new}}\right\rVert_{\infty} }$;
                   \State$\overrightarrow{\overline{q^{new}} }$ $\leftarrow$ $\overrightarrow{q^{new}}$ / $\lambda^{2}$;
-                  \If{${\left\lVert \overrightarrow{\overline{q^{new}} }-\overrightarrow{\overline{q^{old}} }\right\rVert_{\infty} }$ \textless ~$ \varepsilon $ \textbf{and} $flag$ \textgreater ~$ 0$ }
-                  \State\Return{$\sqrt{\lambda^{2}}$, $\overrightarrow{\overline{q^{new}} }$, \textbf{exit}}
-                  \ElsIf{${\left\lVert \overrightarrow{\overline{q^{new}} }-\overrightarrow{\overline{q^{old}} }\right\rVert_{\infty} }$ \textless ~$ \varepsilon $ \textbf{and} $flag$ \textless ~$ 0$ }
-                  \State\Return{$-\sqrt{\lambda^{2}}$, $\overrightarrow{\overline{q^{new}} }$, \textbf{exit}}
-                  \Else
-                  \State$\overrightarrow{\overline{q^{old}}}$ $\leftarrow$ $\overrightarrow{\overline{q^{new}}}$ ;
+                  \If{${\left\lVert \overrightarrow{\overline{q^{new}} }-\overrightarrow{\overline{q^{old}} }\right\rVert_{\infty} }$ \textless ~$ \varepsilon $ }
+                  \State$\lambda$$\leftarrow$$\sqrt{\lambda^{2}}$;
+                          \State$\overrightarrow{vec}$$\leftarrow$$\overrightarrow{q^{update} }+\lambda \overrightarrow{\overline{q^{old}} }$;
+                          \If{${\left\lVert \overrightarrow{vec}\right\rVert_{\infty} }$\textgreater ~$1$}
+                          \State\textbf{Print} $\lambda$,${\overrightarrow{vec}}$/${\left\lVert \overrightarrow{vec}\right\rVert_{\infty} }$;
+                          \EndIf
+                          \State$\overrightarrow{vec}$$\leftarrow$$\overrightarrow{q^{update} }-\lambda \overrightarrow{\overline{q^{old}} }$;
+                          \If{${\left\lVert \overrightarrow{vec}\right\rVert_{\infty} }$\textgreater ~$1$}
+                          \State\textbf{Print} $-\lambda$,${\overrightarrow{vec}}$/${\left\lVert \overrightarrow{vec}\right\rVert_{\infty} }$;
+                  \EndIf
+                  \State\textbf{exit}
                   \EndIf
                   \EndFor
                   \State \textbf{error message};
@@ -559,7 +582,7 @@ A = [-148, -105, -83, -67;
     488, 343, 269, 216;
     -382, -268, -210, -170;
     50, 38, 32, 29];
-A = -A; %comment this line to slove 3(b)
+%A = B; %comment this line to slove 3(b)
 % or uncomment to solve 3(c)
 % or add minus to solve -A
 q_old = [1; 1; 1; 1];
@@ -569,31 +592,35 @@ q_old_bar = q_old / max(abs(q_old));
 % Calculate eigenvalues by Matlab
 eig(A)
 % Iterations
+flag = 0;
+
 for i = 1:maxrept
     q_update = A * q_old_bar;
-    [~, I] = max(abs(q_update));
-    lamda = q_update(I);
     q_new = A * q_update;
-    lamda_square = max(abs(q_new));
-    q_new_bar = q_new / lamda_square;
+    lambda_square = max(abs(q_new));
+    q_new_bar = q_new / lambda_square;
 
-    if max(abs(q_old_bar - q_new_bar)) < epsilon & ...
-            lamda > 0
+    if max(abs(q_old_bar - q_new_bar)) < epsilon
         % Print lambda and eigenvector
-        fprintf("lamda:%.16f\nq_new_bar:", ...
-            sqrt(lamda_square));
-        q_new_bar
+        lambda = sqrt(lambda_square);
+        vec = q_update + lambda * q_old_bar;
+
+        if max(abs(vec)) > 1
+            fprintf("lambda:%.16f\nq_new_bar:", lambda);
+            vec = vec / max(abs(vec))
+        end
+
+        vec = q_update - lambda * q_old_bar;
+
+        if max(abs(vec)) > 1
+            fprintf("lambda:%.16f\nq_new_bar:", -lambda);
+            vec = vec / max(abs(vec))
+        end
+
         break
-    elseif max(abs(q_old_bar - q_new_bar)) < epsilon & ...
-            lamda < 0
-        % Print lambda and eigenvector
-        fprintf("lamda:%.16f\nq_new_bar:", ...
-            -sqrt(lamda_square));
-        q_new_bar
-        break
-    else
-        q_old_bar = q_new_bar;
     end
+
+    q_old_bar = q_new_bar;
 
 end
 
@@ -601,6 +628,7 @@ end
 if i == maxrept + 1
     fprintf("error message");
 end
+
 
         \end{lstlisting}
           (b) (10分）用程序实现上一问中你设计的算法，用于求解
@@ -621,7 +649,7 @@ end
               \lambda = 7.9999999999994875
           \end{equation}
           \begin{equation}
-              \overrightarrow{\overline{q^{new}} }=\left(\begin{array}{c}
+              \overrightarrow{\overline{vec}}=\left(\begin{array}{c}
                       -0.310344827586208 \\
                       1.000000000000000  \\
                       -0.793103448275865 \\
@@ -633,11 +661,11 @@ end
               \lambda = -7.9999999999994875
           \end{equation}
           \begin{equation}
-              \overrightarrow{\overline{q^{new}} }=\left(\begin{array}{c}
-                      -0.310344827586208 \\
-                      1.000000000000000  \\
-                      -0.793103448275865 \\
-                      0.137931034482763
+              \overrightarrow{\overline{vec}} =\left(\begin{array}{c}
+                      0.310344827586208  \\
+                      -1.000000000000000 \\
+                      0.793103448275865  \\
+                      -0.137931034482763
                   \end{array}\right)
           \end{equation}
           (c) （10分）用程序实现第一问中你设计的算法，用于求解
@@ -653,26 +681,48 @@ end
 
           $A$ 的模最大的特征值和特征向量:
           \begin{equation}
-              \lambda = 4.9999999999996785
+              \lambda_{1} = 4.9999999999996785
           \end{equation}
           \begin{equation}
-              \overrightarrow{\overline{q^{new}} }=\left(\begin{array}{c}
-                      -1.000000000000000 \\
-                      0.285714285714289  \\
-                      -0.178571428571430 \\
-                      0.214285714285712
+              \overrightarrow{\overline{vec_{1}} }=\left(\begin{array}{c}
+                      1.000000000000000  \\
+                      -0.500000000000057 \\
+                      0.124999999999975  \\
+                      0.000000000000060
+                  \end{array}\right)
+          \end{equation}
+          \begin{equation}
+              \lambda_{2} = -4.9999999999996785
+          \end{equation}
+          \begin{equation}
+              \overrightarrow{\overline{vec_{2}} }=\left(\begin{array}{c}
+                      1.000000000000000  \\
+                      -0.333333333333332 \\
+                      0.166666666666667  \\
+                      -0.166666666666667
                   \end{array}\right)
           \end{equation}
           $-A$ 的模最大的特征值和特征向量:
           \begin{equation}
-              \lambda = -4.9999999999996785
+              \lambda_{1} = 4.9999999999996785
           \end{equation}
           \begin{equation}
-              \overrightarrow{\overline{q^{new}} }=\left(\begin{array}{c}
+              \overrightarrow{\overline{vec_{1}} }=\left(\begin{array}{c}
                       -1.000000000000000 \\
-                      0.285714285714289  \\
-                      -0.178571428571430 \\
-                      0.214285714285712
+                      0.333333333333332  \\
+                      -0.166666666666667 \\
+                      0.166666666666667
+                  \end{array}\right)
+          \end{equation}
+          \begin{equation}
+              \lambda_{2} = -4.9999999999996785
+          \end{equation}
+          \begin{equation}
+              \overrightarrow{\overline{vec_{2}} }=\left(\begin{array}{c}
+                      -1.000000000000000 \\
+                      0.500000000000057  \\
+                      -0.124999999999975 \\
+                      -0.000000000000060
                   \end{array}\right)
           \end{equation}
           (d) （10分）在\textsc{Matlab}中设定随机数种子为rng(2)使用rand命令生成一个 $100 \times 100$ 的随机矩阵。用你的程序求解离 $0.8-0.6 i$ 最近的特征值和特征向量（你提供的特征向量的 $\infty$ -范数应为1）。
@@ -811,7 +861,7 @@ end
               0.151503936852754      -   0.0177072037470338i
           \end{longtable}
 
-          \begin{algorithm}[H]
+          \begin{breakablealgorithm}
               \caption{Inverse Power Iteration to Find Matrix Eigenvalues Closest to $\lambda$}
               \label{alg::conjugateGradien}
               \begin{algorithmic}[1]
@@ -847,7 +897,7 @@ end
                   \EndFor
                   \State \textbf{error message};
               \end{algorithmic}
-          \end{algorithm}
+          \end{breakablealgorithm}
           (d)题所用\textsc{Matlab}程序显示如下：
           \begin{lstlisting}[frame=single]
 clc, clear;
