@@ -17,6 +17,20 @@
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 \usepackage{lipsum}
+\usepackage[thmmarks,amsmath]{ntheorem}
+
+
+
+\theoremstyle{nonumberplain}
+
+\theoremheaderfont{\bfseries}
+
+\theorembodyfont{\normalfont}
+
+\theoremsymbol{$\square$}
+
+\newtheorem{Proof}{\hskip 2em 证明}
+
 
 \makeatletter
 \newenvironment{breakablealgorithm}
@@ -58,6 +72,7 @@
    commentstyle=\color{dkgreen},
    stringstyle=\color{dkpurple},
    backgroundcolor=\color{white},
+   breaklines=true,
    tabsize=4,
    showspaces=false,
    showstringspaces=false,
@@ -168,7 +183,113 @@ $$
          
 
 \end{enumerate}
+\item[第二题] 本题深入讨论Newton插值公式的性质。
+\begin{enumerate}\item（15分） 对于一个光滑函数 $f(x)$, 证明若 $\left\{i_{0}, i_{1}, \ldots, i_{k}\right\}$ 是 $\{0,1, \ldots, k\}$ 的任意一 个排列，则
+$$
+f\left[x_{0}, x_{1}, \ldots, x_{k}\right]=f\left[x_{i_{0}}, x_{i_{1}}, \ldots, x_{i_{k}}\right]
+$$
+\par 证：
+\par 先证引理：$k$ 阶差商 $f\left[x_{0}, x_{1}, \cdots, x_{k}\right]$ 是由函数值 $f\left(x_{0}\right), f\left(x_{1}\right), \cdots, f\left(x_{k}\right)$的
+线性组合而成.
+$$
+f\left[x_{0}, x_{1}, \cdots, x_{k}\right]=\sum_{i=0}^{k} \frac{1}{\left(x_{i}-x_{0}\right) \cdots\left(x_{i}-x_{i-1}\right)\left(x_{i}-x_{i+1}\right) \cdots\left(x_{i}-x_{k}\right)} f\left(x_{i}\right)
+$$
+用归纳法可以证明这一引理。
+\par 显然，当$k=1$时，引理成立。
+\par 假设当$k=n-1$时，引理成立,故有：
+$$f\left[x_{0}, x_{1}, \cdots, x_{n-1}\right]=\sum_{i=0}^{n-1} \frac{1}{\left(x_{i}-x_{0}\right) \cdots\left(x_{i}-x_{i-1}\right)\left(x_{i}-x_{i+1}\right) \cdots\left(x_{i}-x_{n-1}\right)} f\left(x_{i}\right)$$
+$$f\left[x_{1}, x_{2},\cdots, x_{n}\right]=\sum_{i=1}^{n} \frac{1}{\left(x_{i}-x_{1}\right) \cdots\left(x_{i}-x_{i-1}\right)\left(x_{i}-x_{i+1}\right) \cdots\left(x_{i}-x_{n}\right)} f\left(x_{i}\right)$$
+\par 则$k=n$时：
+$$
+\begin{aligned}
+  f\left[x_{0}, x_{1}, \cdots, x_{n}\right] & =\frac{f\left[x_{0}, x_{1}, \cdots, x_{n-1}\right]-f\left[x_{1}, x_{2},\cdots, x_{n}\right]}{x_{0}-x_{n}}\\
+ & =\sum_{i=0}^{k} \frac{1}{\left(x_{i}-x_{0}\right) \cdots\left(x_{i}-x_{i-1}\right)\left(x_{i}-x_{i+1}\right) \cdots\left(x_{i}-x_{n}\right)} f\left(x_{i}\right)\end{aligned}
+$$
+\par 引理证毕，故有：
+$$
+f\left[x_{0}, x_{1}, \cdots, x_{k}\right]=\sum_{i=0}^{k} \frac{1}{\left(x_{i}-x_{0}\right) \cdots\left(x_{i}-x_{i-1}\right)\left(x_{i}-x_{i+1}\right) \cdots\left(x_{i}-x_{k}\right)} f\left(x_{i}\right)
+$$
+$$
+f\left[x_{i_{0}}, x_{i_{1}}, \cdots, x_{i_{k}}\right]=\sum_{j=0}^{k} \frac{1}{\left(x_{i_{j}}-x_{i_{0}}\right) \cdots\left(x_{i_{j}}-x_{i_{j-1}}\right)\left(x_{i_{j}}-x_{i_{j+1}}\right) \cdots\left(x_{i_{j}}-x_{i_{k}}\right)} f\left(x_{i_{j}}\right)
+$$
+\par 易得：
+$$
+f\left[x_{0}, x_{1}, \ldots, x_{k}\right]=f\left[x_{i_{0}}, x_{i_{1}}, \ldots, x_{i_{k}}\right]
+$$
+\item （10分）课堂上我们提到了Chebyshev点
+$$
+x_{j}=\cos (j \pi / n) \quad j=0,1, \ldots, n
+$$
+以及使用Chebyshev点可以有效地克服Runge现象。写一个MATLAB程序，令 $n=2^{2}, 2^{3}, 2^{4}, \ldots, 2^{7}$, 按照从右到左的顺序（即 $j$ 从小到大的顺序）使用对应
+的 $n+1$ 个Chebyshev点对定义在 $[-1,1]$ 上的Runge函数
+$$
+f(x)=\frac{1}{1+25 x^{2}}
+$$
+进行插值，并取2000个等距点上的误差的最大值，用semilogy图描述插值区
+间上最大误差值随 $n$ 变化的情况（即横轴是 $n$ 。
+\item (10分) 重复上一问，但使用随机数种子rng(22)和randperm函数来随机计算 差商时插值点的使用顺序，取关于不同 $n$ 的2000个等距点上的误差的最大值,
+用semilogy图描述插值区间上最大误差值随 $n$ 变化的情况（即横轴是 $n$ 。
+\item（10分）试着解释上面两小问中你观察到的不同现象产生的原因。注: 此问
+答不出来也无妨。
+\end{enumerate}
+\item[第三题] 本题用于讨论周期函数的Lagrange插值方法。对于周期函数而言，多项式不再是 最有效的基函数，而等距插值点也不再会出现Runge现象。逼近周期函数的基函 数通常选用三角函数或者复指数。同时注意对于周期函数而言，插值点数量和子
+区间个数相等。
+\begin{enumerate}\item （10分）在 $[0,1]$ 上关于周期函数的基于等间距插值点 $x_{j}=\frac{j}{n}, j=0,1, \ldots$, $n-1$ 的Lagrange插值基函数为
+$$
+\ell_{k}(x)=\left\{\begin{array}{ll}
+\frac{(-1)^{k}}{n} \sin (n \pi x) \csc \left(\pi\left(x-x_{k}\right)\right) & \text { 若 } n \text { 为奇数 } \\
+\frac{(-1)^{k}}{n} \sin (n \pi x) \cot \left(\pi\left(x-x_{k}\right)\right) & \text { 若 } n \text { 为偶数 }
+\end{array}\right.
+$$
+证明对于 $n$ 分别为奇数和偶数的情况下
+$$
+\ell_{k}\left(x_{j}\right)=\left\{\begin{array}{ll}
+1 & k=j \\
+0 & k \neq j
+\end{array}\right.
+$$
+\item （10分）用上述对应于 $n$ 为偶数的Lagrange基函数构造Lagrange插值多项式. 并用 $n=2^{6}$ 个点对周期函数 $f(x)=\sin (2 \pi x) e^{\cos (2 \pi x)}$ 在 $[0,1]$ 上进行插值。取1000个 等距点上的误差，用semilogy图描述插值区间上误差值随 $x$ 变化的情况（即
+横轴是 $x$ )。
 
+\end{enumerate}
+\item[第四题] （10分） 写程序完成课本 59 页第7题，并计算出你的拟合函数对比所给数据点的
+误差的2-范数。
+\par 解：
+\par 本题的\textbf{MATLAB}程序显示如下：
+\begin{lstlisting}[frame=single]
+clc, clear
+x = [2.1, 2.5, 2.8, 3.2];
+y = [0.6087, 0.6849, 0.7368, 0.8111];
+a_1 = 0;
+b_1 = 0;
+x_y = x .* y;
+c_11 = sum(x .* x);
+c_12 = -sum(x .* x_y);
+c_21 = -c_12;
+c_22 = -sum(x_y .* x_y);
+B_1 = sum(x .* y);
+B_2 = sum(x_y .* y);
+C = [c_11, c_12; c_21, c_22];
+B = [B_1; B_2];
+tmp = C \ B;
+a_1 = tmp(1);
+b_1 = tmp(2);
+a = 1 / a_1;
+b = b_1 / a_1;
+y_bar = [Phi(x(1), a, b), Phi(x(2), a, b), Phi(x(3), a, b), Phi(x(4), a, b)];
+delta_y = y - y_bar;
+X = sprintf('The 2-norm of the error of the fitting function compared to the given data point is %.15f', norm(delta_y, 2));
+disp(X)
+
+function value = Phi(x, a, b)
+    value = x / (a + b * x);
+end
+
+\end{lstlisting}
+\par 程序运行输出结果为：
+\begin{lstlisting}[frame=single]
+The 2-norm of the error of the fitting function compared to the given data point is 0.005738349475781
+\end{lstlisting}
 \end{enumerate}
 
 

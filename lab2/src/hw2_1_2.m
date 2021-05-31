@@ -53,7 +53,7 @@ for i = 1:2000
     end
 
     s = (xk_1 - t)^3 / (6 * h) * M(k) + (t - xk)^3 / (6 * h) * M(k + 1) + C * (xk_1 - t) + D * (t - xk);
-    error_delta(i) = abs((s - F(t)) / F(t));
+    error_delta(i) = abs(s - F(t));
 end
 
 semilogy(error_delta)
