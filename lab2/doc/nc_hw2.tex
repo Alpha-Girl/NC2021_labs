@@ -220,7 +220,7 @@ $$
 $$
 x_{j}=\cos (j \pi / n) \quad j=0,1, \ldots, n
 $$
-以及使用Chebyshev点可以有效地克服Runge现象。写一个MATLAB程序，令 $n=2^{2}, 2^{3}, 2^{4}, \ldots, 2^{7}$, 按照从右到左的顺序（即 $j$ 从小到大的顺序）使用对应
+以及使用Chebyshev点可以有效地克服Runge现象。写一个\textbf{MATLAB}程序，令 $n=2^{2}, 2^{3}, 2^{4}, \ldots, 2^{7}$, 按照从右到左的顺序（即 $j$ 从小到大的顺序）使用对应
 的 $n+1$ 个Chebyshev点对定义在 $[-1,1]$ 上的Runge函数
 $$
 f(x)=\frac{1}{1+25 x^{2}}
@@ -242,6 +242,50 @@ $$
 \end{array}\right.
 $$
 证明对于 $n$ 分别为奇数和偶数的情况下
+$$
+\ell_{k}\left(x_{j}\right)=\left\{\begin{array}{ll}
+1 & k=j \\
+0 & k \neq j
+\end{array}\right.
+$$
+\par 证：
+\par 当$n$ 为奇数时：
+\par $$\ell_{k}\left(x_{j}\right)=\frac{(-1)^{k}}{n} \sin (n \pi x_{j}) \csc \left(\pi\left(x_{j}-x_{k}\right)\right)$$
+\par 将$x_{j}=\frac{j}{n},x_{k}=\frac{k}{n}$代入得：
+\par $$\ell_{k}\left(x_{j}\right)=\frac{(-1)^{k}}{n} \sin (j \pi ) \csc \left(\frac{\pi}{n}\left(j-k\right)\right)$$
+\par 当$k \neq j$时，$\sin (j \pi )=0,\csc \left(\frac{\pi}{n}\left(j-k\right)\right)\neq 0$，故得：
+$$\ell_{k}\left(x_{j}\right)=0,k \neq j,n \text { 为奇数 }$$
+\par 当$k=j$时，$\sin (j \pi x)=0,\sin \left(\frac{\pi}{n}\left(j-k\right)\right)= 0$,故有：
+$$\begin{aligned}\ell_{k}\left(x_{j}\right) &=\frac{(-1)^{k}}{n} \sin (j \pi ) \csc \left(\frac{\pi}{n}\left(j-k\right)\right)\\
+  &=\lim_{x \to x_{k}}\frac{(-1)^{k}}{n} \sin (n \pi x) \csc \left(\pi\left(x-x_{k}\right)\right)\\
+  &=\lim_{j \to k}  \frac{(-1)^{k}}{n} \sin (j \pi ) \csc \left(\frac{\pi}{n}\left(j-k\right)\right)\\
+  &=\lim_{j \to k}\frac{(-1)^{k}}{n} \frac{\sin (j \pi )}{ \sin \left(\frac{\pi}{n}\left(j-k\right)\right)}\\
+  &=\frac{(-1)^{k}}{n}\lim_{j \to k}\frac{\pi \cos(j\pi)}{\frac{\pi}{n}\cos\left(\frac{\pi}{n}\left(j-k\right)\right)}\\
+  &=\frac{(-1)^{k}}{n}\frac{\pi \cos(k\pi)}{\frac{\pi}{n}\cos\left(0\right)}\\
+  &=1
+\end{aligned}
+$$
+\par 即：
+$$\ell_{k}\left(x_{j}\right)=1,k = j,n \text { 为奇数 }$$
+\par 当$n$ 为偶数时：
+\par $$\ell_{k}\left(x_{j}\right)=\frac{(-1)^{k}}{n} \sin (n \pi x_{j}) \cot \left(\pi\left(x_{j}-x_{k}\right)\right)$$
+\par 将$x_{j}=\frac{j}{n},x_{k}=\frac{k}{n}$代入得：
+\par $$\ell_{k}\left(x_{j}\right)=\frac{(-1)^{k}}{n} \sin (j \pi ) \cot \left(\frac{\pi}{n}\left(j-k\right)\right)$$
+\par 当$k \neq j$时，$\sin (j \pi )=0,\cot \left(\frac{\pi}{n}\left(j-k\right)\right)\neq 0$，故得：
+$$\ell_{k}\left(x_{j}\right)=0,k \neq j, n \text { 为偶数 }$$
+\par 当$k=j$时，$\sin (j \pi x)=0,\sin \left(\frac{\pi}{n}\left(j-k\right)\right)= 0$,故有：
+$$\begin{aligned}\ell_{k}\left(x_{j}\right) &=\frac{(-1)^{k}}{n} \sin (j \pi ) \cot \left(\frac{\pi}{n}\left(j-k\right)\right)\\
+  &=\lim_{x \to x_{k}}\frac{(-1)^{k}}{n} \sin (n \pi x) \cot \left(\pi\left(x-x_{k}\right)\right)\\
+  &=\lim_{j \to k}  \frac{(-1)^{k}}{n} \sin (j \pi ) \cot \left(\frac{\pi}{n}\left(j-k\right)\right)\\
+  &=\lim_{j \to k}\frac{(-1)^{k}}{n}\cos\left(\frac{\pi}{n}\left(j-k\right)\right) \frac{\sin (j \pi )}{ \sin \left(\frac{\pi}{n}\left(j-k\right)\right)}\\
+  &=\frac{(-1)^{k}}{n}\lim_{j \to k}\cos\left(\frac{\pi}{n}\left(j-k\right)\right)\lim_{j \to k}\frac{\pi \cos(j\pi)}{\frac{\pi}{n}\cos\left(\frac{\pi}{n}\left(j-k\right)\right)}\\
+  &=\frac{(-1)^{k}}{n}\frac{\pi \cos(k\pi)}{\frac{\pi}{n}\cos\left(0\right)}\\
+  &=1
+\end{aligned}
+$$
+\par 即：
+$$\ell_{k}\left(x_{j}\right)=1,k = j,n \text { 为偶数 }$$
+\par 综上：
 $$
 \ell_{k}\left(x_{j}\right)=\left\{\begin{array}{ll}
 1 & k=j \\
