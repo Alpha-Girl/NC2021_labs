@@ -1,7 +1,7 @@
 clear,clc
 syms x;
 F = @(x) sin(4 * (x^2)) + (sin(4 * x))^2;
-n = 2^4;
+n = 2^10;
 A = eye(n + 1);
 A = 2 * A;
 A(1, 2) = 1;

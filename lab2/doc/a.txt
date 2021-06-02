@@ -1,0 +1,26 @@
+                    \par 首先观察Chebyshev点按从左到右顺序使用时，拟合结果的semilogy图:
+                    \begin{figure}[H]
+                        \centering
+                        \includegraphics[scale=0.3]{t1.png}
+                        \caption{拟合结果的semilogy图（$n$从左向右，从上到下递增）}
+                    \end{figure}
+                    \par 可以发现，在$n=6,7$时，当$x$趋于$-1$时，拟合结果的数量级逐渐增大。
+                    \par 下面单独取出$x=-1$进行分析，进行数值实验。
+                    \par 由$Newton$插值多项式：
+                    $$
+                        N(x)=f\left[x_{0}\right]+\sum_{k=1}^{n} f\left[x_{0}, x_{1}, \cdots, x_{k}\right]\left(x-x_{0}\right)\left(x-x_{1}\right) \cdots\left(x-x_{k-1}\right)
+                    $$
+                    \par 逐一分析求和项中各项的数量级，当Chebyshev点按从左到右顺序使用时,有：
+                    \begin{figure}[H]
+                        \centering
+                        \includegraphics[scale=0.3]{cs_s.png}
+                        \caption{求和项中各项的数量级（Chebyshev点顺序使用）（$n$从左向右，从上到下递增）}
+                    \end{figure}
+                    \par 当Chebyshev点按随机顺序使用时,有：
+                    \begin{figure}[H]
+                        \centering
+                        \includegraphics[scale=0.3]{cs_l.png}
+                        \caption{求和项中各项的数量级（Chebyshev点乱序使用）（$n$从左向右，从上到下递增）}
+                    \end{figure}
+                    上图中未标出的点表示该项为0。可以看出，顺序使用时，求和项的数量级较大，下面进一步分析出现这一现象的原因。
+                    
