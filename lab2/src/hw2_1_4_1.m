@@ -2,15 +2,17 @@ clear,clc
 syms x;
 F = @(x) sin(4 * (x^2)) + (sin(4 * x))^2;
 n = 2^4;
-A = eye(n + 1);
+A = eye(n);
 A = 2 * A;
-A(1, 2) = 1;
-A(n + 1, n) = 1;
 h = (1 - (-1)) / n;
 lambda = 1/2;
 mu = 1 - lambda;
+A(1, 2) = lambda;
+A(n, 1) = lambda;
+A(1, n) = mu;
+A(n, n - 1) = mu;
 
-for i = 2:n
+for i = 2:n - 1
     A(i, i - 1) = mu;
     A(i, i + 1) = lambda;
 end
@@ -23,16 +25,22 @@ for i = 1:n + 1
     y(i) = F(xx(i));
 end
 
-d = [0:1:n];
+d = [1:1:n];
 
 for i = 2:n
-    d(i) = 3 * (y(i + 1) - 2 * y(i) + y(i - 1)) / (h^2);
+    d(i - 1) = 3 * (y(i + 1) - 2 * y(i) + y(i - 1)) / (h^2);
 end
 
-d(1) = 6 / h * ((y(2) - y(1)) / h - 0);
-d(n + 1) = 6 / h * (0 - (y(n + 1) - y(n)) / h);
+d(n) = 6 / h * (0 - (y(n + 1) - y(n)) / h);
 d = d';
 M = A \ d;
+tmp = M;
+M(1) = tmp(n);
+
+for i = 1:n
+    M(i + 1) = tmp(i);
+end
+
 k = 1;
 xk_1 = xx(2);
 xk = xx(1);
