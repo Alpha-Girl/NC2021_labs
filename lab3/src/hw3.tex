@@ -98,10 +98,10 @@
 
 \begin{enumerate}
     \item[第一题] 本题考虑使用Richardson外推技术提高向前差商求给定函数导数的精度。
-    \begin{enumerate}\item  （5分）使用向前差分计算 $f(x)=\sin (x)$ 在 $x=1.2$ 处的导数并使用loglog图 展示其精度随离散区间大小 $h$ 的变化。 $h$ 取 $10^{0}, 10^{-1}, 10^{-2}, 10^{-3}, \ldots, 10^{-15}$ 。
-    \par 解：
-    \par 本题的\textbf{MATLAB}程序显示如下：
-    \begin{lstlisting}[frame=single]
+          \begin{enumerate}\item  （5分）使用向前差分计算 $f(x)=\sin (x)$ 在 $x=1.2$ 处的导数并使用loglog图 展示其精度随离散区间大小 $h$ 的变化。 $h$ 取 $10^{0}, 10^{-1}, 10^{-2}, 10^{-3}, \ldots, 10^{-15}$ 。
+                    \par 解：
+                    \par 本题的\textbf{MATLAB}程序显示如下：
+                    \begin{lstlisting}[frame=single]
 clear,clc
 
 syms x;
@@ -119,46 +119,101 @@ end
 
 loglog(h_l, result);
 \end{lstlisting}
-\par 程序运行输出结果为：
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.45]{1_1.png}
-    \caption{向前差分精度随离散区间大小h的变化的情况}
-\end{figure}
-        \item（10分）推导出使用Richardson外推技术的向前差商的计算公式并用伪代码 给出算法。
-    \item（5分）使用你的算法计算 $f(x)=\sin (x)$ 在 $x=1.2$ 处的导数并使用semilogy图 展示其精度随外推次数变化的情况。请自己选取h初始值，使得用外推方法
-    能够算出的最精确的导数尽量精确。你的回答需要说明你使用外推方法算出
-    的导数值是多少、误差又是多少、h的初始值是多少、外推了多少次。
-    \end{enumerate}
-    \item[第二题] 本题讨论使用复化梯形公式求周期函数的积分。
-    \begin{enumerate}
-        \item 
-        (10分）证明当 $r$ 不是 $m$ 的整倍数的情况下，使用 $m$ 个子区间的复化梯形公式
-        可以精确积分
-        $$
-        \int_{-\pi}^{\pi} \cos (r x) d x \quad \text { 和 } \quad \int_{-\pi}^{\pi} \sin (r x) d x
-        $$
-        注意：这一结论类似于课堂上我们定义的代数精度。同时说明如果 $r$ 为 $m$ 的
-        整倍数时复化梯形公式对于上面两个积分会给出怎样的结果
-        \item （10分）由于任意的以 $2 \pi$ 为周期的周期函数都可以表示为由正弦与余弦函数 的线性组合，所以上一问中所证明的定理实际上告诉我们求解一个周期函 数的积分的有效方法正是复化梯形公式。现使用复化梯形公式和不同数量 的子区间个数来求 $f(x)=e^{\cos (x)}$ 在 $[-\pi, \pi]$ 的积分，并用这个函数的真实积分 值作为参照使用semilogy图画出随着子区间数量 $m$ 变化所得到的积分精度 的变化。
-        \par 题后语: 复化梯形公式之于周期函数的积分如同Gauss积分公式之于非周期
-        函数的基于多项式的积分。因此复化梯形公式是最有效的求解周期函数积分 的方法。
-    \end{enumerate} 
-    \item[第三题] 
-    \begin{enumerate}
-        \item （10分）推导出如下格式的多步法公式:
-        \begin{equation}\label{1}
-            y_{n+1}=y_{n-1}+\alpha f_{n+1}+\beta f_{n}+\gamma f_{n-1}
-        \end{equation}
-        \item （10分）推导此格式的局部截断误差，并由此指明此格式的阶数。
-        \item （10分）选取合适的步长值，用此格式在 $[0,2]$ 上解如下的初值问题:
-        \begin{equation}\label{2}
-            y^{\prime}=x e^{-4 x}-4 y, \quad y(0)=0
-        \end{equation}
+                    \par 程序运行输出结果为：
+                    \begin{figure}[H]
+                        \centering
+                        \includegraphics[scale=0.45]{1_1.png}
+                        \caption{向前差分精度随离散区间大小h的变化的情况}
+                    \end{figure}
+              \item（10分）推导出使用Richardson外推技术的向前差商的计算公式并用伪代码 给出算法。
+                    \par 解
+                    $$
+                        f\left(x_{0}+h\right)=f\left(x_{0}\right)+h f^{\prime}\left(x_{0}\right)+\frac{h^{2}}{2 !} f^{\prime \prime}\left(x_{0}\right)+\frac{h^{3}}{3 !} f^{\prime \prime \prime}\left(x_{0}\right)+\frac{h^{4}}{4 !} f^{(4)}\left(x_{0}\right)+O\left(h^{5}\right) \\
+                        ((2)-(1)) / 2
+                    $$
+                    得
+                    $$f^{\prime}\left(x_{0}\right)=\frac{1}{ h}\left[f\left(x_{0}+h\right)-f\left(x_{0}\right)\right]+\frac{h}{2} f^{(2)}\left(x_{0}\right)+O\left(h^{3}\right)
+                    $$
+                    记
+                    $$N_{1}(h)=\frac{f\left(x_{0}+h\right)-f\left(x_{0}\right)}{ h} $$
+                    $$f^{\prime}\left(x_{0}\right)=N_{1}(h)+\frac{h}{2} f^{(2)}\left(x_{0}\right)+O\left(h^{2}\right) $$
 
-        使用你刚刚推导出的格式\ref{1}，并利用二阶Runge-Kutta方法(即课本公式(7.15))起 步。画出解函数。
-        \item （10分）推导出 \ref{2}的精确解。对比该精确解在 $x=2$ 这一点的值，用log-log图 展示所用方法的阶数，并给出解释。
-    \end{enumerate}  
+                    $$f^{\prime}\left(x_{0}\right)=N_{1}\left(\frac{h}{2}\right)+\frac{1}{2}\left(\frac{h}{2}\right) f^{(2)}\left(x_{0}\right)+O\left(h^{2}\right)$$
+                    $$f^{\prime}\left(x_{0}\right)=\frac{1}{2-1}\left(2 N_{1}\left(\frac{h}{2}\right)-N_{1}(h)\right)+O\left(h^{2}\right) \approx N_{2}(h) $$
+                    $$N_{2}(h)=N_{1}\left(\frac{h}{2}\right)+\frac{N_{1}\left(\frac{h}{2}\right)-N_{1}(h)}{2-1}
+                    $$
+                    继续外推下去, 得到
+                    $$N_{j}(h)=N_{j-1}\left(\frac{h}{2}\right)+\frac{N_{j-1}\left(\frac{h}{2}\right)-N_{j-1}(h)}{2^{j-1}-1}, \quad j=2,3, \cdots
+                    $$
+                    伪代码如下：
+                    \begin{breakablealgorithm}
+                        \caption{Forward Difference Quotient with Richardson Extrapolation}
+                        \label{alg::conjugateGradien}
+                        \begin{algorithmic}[1]
+                            \Require
+                            $h$:initial value of h;
+
+                            $maxrept$: the maximum number of iterations;
+          
+                            $\varepsilon $: error size;
+
+                            \Ensure
+                            $f^{\prime}\left(x_{0}\right)$: the estimated value which is closest to $f^{\prime}\left(x_{0}\right)$;
+          
+                            $error message$: if the input cannot be resolved by algorithm;
+                            \State $A.length$ $\leftarrow$ $2$;
+                            \State $A\left[1\right]$ $\leftarrow$ $N_{1}\left(\frac{h}{2}\right)$;
+                            \State $A\left[2\right]$ $\leftarrow$ $N_{1}\left(h\right)$;
+                            \State $tmp$ $\leftarrow$ $2A\left[2\right]-A\left[1\right]$;
+                            \While {$\left\lvert tmp-A\left[1\right]\right\rvert\ and\ A.length \leq maxrept $}
+                            \State $A\left[2\right]$ $\leftarrow$ $tmp$;
+                            \State $A.length$ $\leftarrow$ $A.length + 1$;
+                            \State $A\left[A.length\right]$ $\leftarrow$ $N_{1}\left(\frac{h}{2^{A.length-1}}\right)$;
+                            \For {$i$ = $1$ \textbf{to} $A.length - 2$ }
+                            \State $A\left[A.length-i\right]$ $\leftarrow$ $A\left[A.length-i+1\right]+\frac{A\left[A.length-i+1\right]-A\left[A.length-i\right]}{2^{i}-1}$;
+                            \EndFor 
+                            \State $tmp$ $\leftarrow$ $A\left[2\right]+\frac{A\left[2\right]-A\left[1\right]}{2^{A.length-1}-1}$;
+                            \EndWhile
+                            \If{$A.length > maxrept$}
+                            \State \textbf{error message};
+                            \Else 
+                            \State \textbf{return} $tmp$;
+                            \EndIf
+                        \end{algorithmic}
+                    \end{breakablealgorithm}
+              \item（5分）使用你的算法计算 $f(x)=\sin (x)$ 在 $x=1.2$ 处的导数并使用semilogy图 展示其精度随外推次数变化的情况。请自己选取h初始值，使得用外推方法
+                    能够算出的最精确的导数尽量精确。你的回答需要说明你使用外推方法算出
+                    的导数值是多少、误差又是多少、h的初始值是多少、外推了多少次。
+          \end{enumerate}
+    \item[第二题] 本题讨论使用复化梯形公式求周期函数的积分。
+          \begin{enumerate}
+              \item
+                    (10分）证明当 $r$ 不是 $m$ 的整倍数的情况下，使用 $m$ 个子区间的复化梯形公式
+                    可以精确积分
+                    $$
+                        \int_{-\pi}^{\pi} \cos (r x) d x \quad \text { 和 } \quad \int_{-\pi}^{\pi} \sin (r x) d x
+                    $$
+                    注意：这一结论类似于课堂上我们定义的代数精度。同时说明如果 $r$ 为 $m$ 的
+                    整倍数时复化梯形公式对于上面两个积分会给出怎样的结果
+              \item （10分）由于任意的以 $2 \pi$ 为周期的周期函数都可以表示为由正弦与余弦函数 的线性组合，所以上一问中所证明的定理实际上告诉我们求解一个周期函 数的积分的有效方法正是复化梯形公式。现使用复化梯形公式和不同数量 的子区间个数来求 $f(x)=e^{\cos (x)}$ 在 $[-\pi, \pi]$ 的积分，并用这个函数的真实积分 值作为参照使用semilogy图画出随着子区间数量 $m$ 变化所得到的积分精度 的变化。
+                    \par 题后语: 复化梯形公式之于周期函数的积分如同Gauss积分公式之于非周期
+                    函数的基于多项式的积分。因此复化梯形公式是最有效的求解周期函数积分 的方法。
+          \end{enumerate}
+    \item[第三题]
+          \begin{enumerate}
+              \item （10分）推导出如下格式的多步法公式:
+                    \begin{equation}\label{1}
+                        y_{n+1}=y_{n-1}+\alpha f_{n+1}+\beta f_{n}+\gamma f_{n-1}
+                    \end{equation}
+              \item （10分）推导此格式的局部截断误差，并由此指明此格式的阶数。
+              \item （10分）选取合适的步长值，用此格式在 $[0,2]$ 上解如下的初值问题:
+                    \begin{equation}\label{2}
+                        y^{\prime}=x e^{-4 x}-4 y, \quad y(0)=0
+                    \end{equation}
+
+                    使用你刚刚推导出的格式\ref{1}，并利用二阶Runge-Kutta方法(即课本公式(7.15))起 步。画出解函数。
+              \item （10分）推导出 \ref{2}的精确解。对比该精确解在 $x=2$ 这一点的值，用log-log图 展示所用方法的阶数，并给出解释。
+          \end{enumerate}
 \end{enumerate}
 
 
