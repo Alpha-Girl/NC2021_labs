@@ -126,7 +126,7 @@ loglog(h_l, result);
                         \caption{向前差分精度随离散区间大小h的变化的情况}
                     \end{figure}
               \item（10分）推导出使用Richardson外推技术的向前差商的计算公式并用伪代码 给出算法。
-                    \par 解
+                    \par 解：
                     $$
                         f\left(x_{0}+h\right)=f\left(x_{0}\right)+h f^{\prime}\left(x_{0}\right)+\frac{h^{2}}{2 !} f^{\prime \prime}\left(x_{0}\right)+\frac{h^{3}}{3 !} f^{\prime \prime \prime}\left(x_{0}\right)+\frac{h^{4}}{4 !} f^{(4)}\left(x_{0}\right)+O\left(h^{5}\right) \\
                         ((2)-(1)) / 2
@@ -162,11 +162,11 @@ loglog(h_l, result);
           
                             $error message$: if the input cannot be resolved by algorithm;
                             \State $A.length$ $\leftarrow$ $2$;
-                            \State $A\left[1\right]$ $\leftarrow$ $N_{1}\left(\frac{h}{2}\right)$;
-                            \State $A\left[2\right]$ $\leftarrow$ $N_{1}\left(h\right)$;
+                            \State $A\left[1\right]$ $\leftarrow$ $N_{1}\left(h\right)$;
+                            \State $A\left[2\right]$ $\leftarrow$ $N_{1}\left(\frac{h}{2}\right)$;
                             \State $tmp$ $\leftarrow$ $2A\left[2\right]-A\left[1\right]$;
-                            \While {$\left\lvert tmp-A\left[1\right]\right\rvert\ and\ A.length \leq maxrept $}
-                            \State $A\left[2\right]$ $\leftarrow$ $tmp$;
+                            \While {$\left\lvert tmp-A\left[1\right]\right\rvert \geq \varepsilon  \ and\ A.length \leq maxrept $}
+                            \State $A\left[1\right]$ $\leftarrow$ $tmp$;
                             \State $A.length$ $\leftarrow$ $A.length + 1$;
                             \State $A\left[A.length\right]$ $\leftarrow$ $N_{1}\left(\frac{h}{2^{A.length-1}}\right)$;
                             \For {$i$ = $1$ \textbf{to} $A.length - 2$ }
@@ -184,6 +184,95 @@ loglog(h_l, result);
               \item（5分）使用你的算法计算 $f(x)=\sin (x)$ 在 $x=1.2$ 处的导数并使用semilogy图 展示其精度随外推次数变化的情况。请自己选取h初始值，使得用外推方法
                     能够算出的最精确的导数尽量精确。你的回答需要说明你使用外推方法算出
                     的导数值是多少、误差又是多少、h的初始值是多少、外推了多少次。
+                    \par 解：
+                    \par 本题的\textbf{MATLAB}程序显示如下：
+                    \begin{lstlisting}[frame=single]
+clear,clc,close all
+
+syms x;
+F = @(x)sin(x);
+maxrept = 50;
+a = cos(1.2);
+
+for i = 0:15
+    h = 10^(-i);
+
+    for k = -15:-5
+        epslion = 10^(k);
+        A(1) = N(h);
+        A(2) = N(h / 2);
+        tmp = 2 * A(2) - A(1);
+
+        if i == 0
+            B(1) = abs(N(h) - a);
+            B(2) = abs(tmp - a);
+        end
+
+        while abs(tmp - A(1)) >= epslion && length(A) <= maxrept
+
+            A(1) = tmp;
+            A(length(A) + 1) = N(h / (2^(length(A) - 1)));
+
+            for j = 1:length(A) - 2
+                A(length(A) - j) = A(length(A) - j + 1) + (A(length(A) - j + 1) - A(length(A) - j)) / (2^j - 1);
+            end
+
+            tmp = A(2) + (A(2) - A(1)) / (2^(length(A) - 1) - 1);
+
+            if i == 0
+                B(length(A)) = abs(tmp - a);
+            end
+
+        end
+
+        if length(A) <= maxrept && abs(tmp) > epslion
+            X = sprintf('h:10^%d tmp:%.15f epslion:10^%d n:%d delta:%.15f', -i, tmp, k, length(A), abs(tmp - a));
+            disp(X)
+            break;
+        end
+
+        if i == 0
+            B = [];
+        end
+
+        A = [];
+    end
+
+end
+
+semilogy(1:length(B), B);
+
+function result = N(h)
+    syms y;
+    F = @(y)sin(y);
+    result = (F(1.2 + h) - F(1.2)) / h;
+end
+\end{lstlisting}
+\par 程序运行的输出结果为：
+\begin{lstlisting}[frame=single]
+h:10^0 tmp:0.362357754476664 epslion:10^-13 n:12 delta:0.000000000000010
+h:10^-1 tmp:0.362357754478041 epslion:10^-11 n:11 delta:0.000000000001367
+h:10^-2 tmp:0.362357754474414 epslion:10^-11 n:11 delta:0.000000000002260
+h:10^-3 tmp:0.362357754498787 epslion:10^-10 n:10 delta:0.000000000022113
+h:10^-4 tmp:0.370652071522364 epslion:10^-11 n:34 delta:0.008294317045690
+h:10^-5 tmp:0.362357755880015 epslion:10^-8 n:8 delta:0.000000001403341
+h:10^-6 tmp:0.362357759856709 epslion:10^-8 n:7 delta:0.000000005380035
+h:10^-7 tmp:0.362357752692333 epslion:10^-7 n:2 delta:0.000000001784341
+h:10^-8 tmp:0.362357777117239 epslion:10^-7 n:2 delta:0.000000022640566
+h:10^-9 tmp:0.362358032468535 epslion:10^-6 n:2 delta:0.000000277991861
+h:10^-10 tmp:0.362359031782951 epslion:10^-8 n:6 delta:0.000001277306278
+h:10^-11 tmp:0.362376795219604 epslion:10^-8 n:7 delta:0.000019040742931
+h:10^-12 tmp:0.362376783868240 epslion:10^-6 n:6 delta:0.000019029391566
+h:10^-15 tmp:0.444089209850063 epslion:10^-15 n:2 delta:0.081731455373389  
+\end{lstlisting}
+\par 其中$h$为初始值，
+$tmp$为算出的导数值，$epslion$为设置的误差限，$n$为外推次数，$delta$为计算的结果与\textbf{MATLAB}计算的在$x=1.2$处的导数值$cos(1.2)$的差值。
+\par 故选取$h$初始值为$10^0$，算出的导数值为$0.362357754476664$，误差为$0.000000000000010$，外推了$12$次，得到的semilogy图为：
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.45]{1_3.png}
+    \caption{精度随外推次数变化情况（h=0）}
+\end{figure}
           \end{enumerate}
     \item[第二题] 本题讨论使用复化梯形公式求周期函数的积分。
           \begin{enumerate}
@@ -191,14 +280,63 @@ loglog(h_l, result);
                     (10分）证明当 $r$ 不是 $m$ 的整倍数的情况下，使用 $m$ 个子区间的复化梯形公式
                     可以精确积分
                     $$
-                        \int_{-\pi}^{\pi} \cos (r x) d x \quad \text { 和 } \quad \int_{-\pi}^{\pi} \sin (r x) d x
+                        \int_{-\pi}^{\pi} \cos (r x) d x  \text { 和 }  \int_{-\pi}^{\pi} \sin (r x) d x
                     $$
                     注意：这一结论类似于课堂上我们定义的代数精度。同时说明如果 $r$ 为 $m$ 的
-                    整倍数时复化梯形公式对于上面两个积分会给出怎样的结果
+                    整倍数时复化梯形公式对于上面两个积分会给出怎样的结果。
+                    \par 解：
+                    \par 记 $M_{2}=\max _{a \leqslant x \leqslant b}\left|f^{\prime \prime}(x)\right|$, 则
+                    $$
+                    \left|E_{n}(f)\right| \leqslant \frac{(b-a)^{3}}{12 n^{2}} M_{2}=O\left(\frac{1}{n^{2}}\right)
+                    $$
+                    对于任给的误差控制小量 $\varepsilon>0$,
+                    $$
+                    \frac{(b-a)^{3}}{12 n^{2}} M_{2}<\varepsilon \quad \text { 或 } n \geqslant\left[\sqrt{\frac{(b-a)^{3} M_{2}}{12 \varepsilon}}\right]+1
+                    $$
+                    又因
+                    $$cos^{\prime \prime}(rx)=-r^{2}cos(rx)$$ $$sin^{\prime \prime}(rx)=-r^{2}sin(rx)$$
+                    故有$M_{2}=r^{2}$，则$r$为$m$的整数倍$(r=km)$时，
+                    $$
+                    \frac{(2\pi)^{3}}{12 m^{2}}k^{2} m^{2}= \frac{(2\pi)^{3}}{12}k^{2} > \varepsilon
+                    $$
+                    若$r$不是$m$的整数倍，则存在$m$，使得
+                    $$m \geqslant\left[\sqrt{\frac{(2\pi)^{3} r^{2}}{12 \varepsilon}}\right]+1
+$$就有 $\left|E_{n}(f)\right|<\varepsilon$，便可使用$m$个子区间的复化梯形公式精确积分。
               \item （10分）由于任意的以 $2 \pi$ 为周期的周期函数都可以表示为由正弦与余弦函数 的线性组合，所以上一问中所证明的定理实际上告诉我们求解一个周期函 数的积分的有效方法正是复化梯形公式。现使用复化梯形公式和不同数量 的子区间个数来求 $f(x)=e^{\cos (x)}$ 在 $[-\pi, \pi]$ 的积分，并用这个函数的真实积分 值作为参照使用semilogy图画出随着子区间数量 $m$ 变化所得到的积分精度 的变化。
                     \par 题后语: 复化梯形公式之于周期函数的积分如同Gauss积分公式之于非周期
                     函数的基于多项式的积分。因此复化梯形公式是最有效的求解周期函数积分 的方法。
-          \end{enumerate}
+                    \par 解：
+                    $$\int_{-\pi}^{\pi} e^{cos(x)} dx =  2\pi I_0(1)\approx 7.95492652101284527451$$
+                    \par 本题的\textbf{MATLAB}程序显示如下：
+                    \begin{lstlisting}[frame=single]
+clc, clear, close all
+syms x;
+F = @(x) exp(cos(x));
+maxrept = 50;
+r = 7.95492652101284527451;
+
+for i = 2:maxrept
+    h = 2 * pi / i;
+    S = F(-pi) / 2 + F(pi) / 2;
+
+    for j = 1:i - 1
+        S = S + F(-pi + j * h);
+    end
+
+    S = S * h;
+    T(i - 1) = abs(S - r);
+end
+
+semilogy([2:maxrept], T);
+\end{lstlisting}
+\par 程序运行的输出结果为：
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.45]{2_2.png}
+    \caption{积分精度随子区间数$m$变化情况}
+\end{figure}
+\par 其中未显示的点，表示在机器精度限制下差值为0。                    
+                \end{enumerate}
     \item[第三题]
           \begin{enumerate}
               \item （10分）推导出如下格式的多步法公式:
